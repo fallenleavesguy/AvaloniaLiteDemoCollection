@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
-using SelectableGrid.Models;
+using SelectableGrid.ViewModels;
 
 namespace SelectableGrid.Converters;
 

@@ -6,14 +6,14 @@
         xmlns:converters="clr-namespace:SelectableGrid.Converters"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SelectableGrid.Views.MainWindow"
-        x:DataType="vm:ConverterUsageWithDataGridWindowViewModel"
+        x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="SelectableGrid">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:ConverterUsageWithDataGridWindowViewModel />
+        <vm:MainWindowViewModel />
     </Design.DataContext>
 
     <Window.Resources>
@@ -33,7 +33,7 @@
                                             Width="Auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsSelected}"></CheckBox>
+                                <CheckBox IsChecked="{Binding IsSelected}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -96,14 +96,7 @@
                 <Button Content="Delete Selected Person"
                         Command="{Binding DeleteSelectedPersonCommand}"
                         HorizontalAlignment="Right" />
-
-                <!-- <ui:TeachingTip Title="Error" -->
-                <!--     PreferredPlacement="BottomLeft" -->
-                <!--     Background="Red" -->
-                <!--     IsOpen="{Binding IsOpenError, Mode=TwoWay}" -->
-                <!--     Subtitle="{Binding ErrorMessage}"/> -->
             </StackPanel>
-
         </Grid>
     </Border>
 </Window>
