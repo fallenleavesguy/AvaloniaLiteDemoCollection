@@ -3,7 +3,7 @@ using System;
 
 namespace SelectableGrid.ViewModels;
 
-public partial class PersonViewModel : ObservableObject
+public partial class PersonViewModel : ObservableObject, ISelectable
 {
     [ObservableProperty]
     private string _name = string.Empty;

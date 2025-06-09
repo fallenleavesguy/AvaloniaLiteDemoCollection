@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace SelectableGrid.ViewModels;
 
-public partial class SelectableGridViewViewModel : ViewModelBase, ICanSelectAll
+public partial class SelectableGridViewViewModel : SelectableCollectionViewModelBase<PersonViewModel>
 {
     [ObservableProperty] private ObservableCollection<PersonViewModel> _people;
 
@@ -19,7 +19,10 @@ public partial class SelectableGridViewViewModel : ViewModelBase, ICanSelectAll
 
     [ObservableProperty] private string _newPersonAge = "0";
 
-    [ObservableProperty] private bool? _isAllSelected;
+    /// <summary>
+    /// 实现基类的抽象属性，返回可选择的项目集合
+    /// </summary>
+    protected override ObservableCollection<PersonViewModel> SelectableItems => People;
 
     public SelectableGridViewViewModel()
     {
@@ -34,13 +37,8 @@ public partial class SelectableGridViewViewModel : ViewModelBase, ICanSelectAll
             new PersonViewModel { Name = "Arda", Age = 22, Sex = SexTypes.Unknown }
         ];
 
-        // 使用CollectionChanged事件自动处理添加/删除时的事件订阅
-        People.CollectionChanged += OnPeopleCollectionChanged;
-
-        // 为现有项目订阅事件
-        SubscribeToAllPersonEvents();
-
-        UpdateSelectAllState();
+        // 调用基类的初始化方法来设置全选功能
+        InitializeSelectAllFeature();
     }
 
     [RelayCommand]
@@ -58,7 +56,7 @@ public partial class SelectableGridViewViewModel : ViewModelBase, ICanSelectAll
             Sex = SelectedSexType
         };
 
-        People.Add(newPerson); // CollectionChanged事件会自动处理订阅
+        People.Add(newPerson); // 基类会自动处理订阅
 
         // Clear input fields after adding
         NewPersonName = string.Empty;
@@ -69,94 +67,7 @@ public partial class SelectableGridViewViewModel : ViewModelBase, ICanSelectAll
     [RelayCommand]
     private void DeleteSelectedPerson()
     {
-        var personsToRemove = People.Where(p => p.IsSelected).ToList();
-        foreach (var person in personsToRemove)
-        {
-            People.Remove(person); // CollectionChanged事件会自动处理取消订阅
-        }
-    }
-
-    private bool _isUpdatingSelectAllState = false;
-
-    /// <summary>
-    /// 处理People集合变化事件，自动订阅/取消订阅SelectionChanged事件
-    /// </summary>
-    private void OnPeopleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        // 处理移除的项目
-        if (e.OldItems != null)
-        {
-            foreach (PersonViewModel person in e.OldItems)
-            {
-                person.SelectionChanged -= OnPersonSelectionChanged;
-            }
-        }
-
-        // 处理添加的项目
-        if (e.NewItems != null)
-        {
-            foreach (PersonViewModel person in e.NewItems)
-            {
-                person.SelectionChanged += OnPersonSelectionChanged;
-            }
-        }
-
-        UpdateSelectAllState();
-    }
-
-    /// <summary>
-    /// 为所有现有Person订阅SelectionChanged事件
-    /// </summary>
-    private void SubscribeToAllPersonEvents()
-    {
-        foreach (var person in People)
-        {
-            person.SelectionChanged += OnPersonSelectionChanged;
-        }
-    }
-
-    partial void OnIsAllSelectedChanged(bool? value)
-    {
-        if (!_isUpdatingSelectAllState && value.HasValue)
-        {
-            // 使用临时标志避免递归调用，不需要取消订阅事件
-            _isUpdatingSelectAllState = true;
-
-            foreach (var person in People)
-            {
-                person.IsSelected = value.Value;
-            }
-
-            _isUpdatingSelectAllState = false;
-        }
-    }
-
-    private void OnPersonSelectionChanged()
-    {
-        UpdateSelectAllState();
-    }
-
-    private void UpdateSelectAllState()
-    {
-        _isUpdatingSelectAllState = true;
-
-        if (People.Count == 0)
-        {
-            IsAllSelected = false;
-        }
-        else if (People.All(p => p.IsSelected))
-        {
-            IsAllSelected = true;
-        }
-        else if (People.All(p => !p.IsSelected))
-        {
-            IsAllSelected = false;
-        }
-        else
-        {
-            IsAllSelected = null; // Some selected, some not (indeterminate state)
-        }
-
-        _isUpdatingSelectAllState = false;
+        // 使用基类提供的方法删除选中的项目
+        RemoveSelectedItems();
     }
 }
