@@ -19,27 +19,33 @@
     <Window.Resources>
         <converters:AgeToIsAdultConverter x:Key="AgeToIsAdultConverter" />
         <converters:SexStatusToBackgroundColorConverter x:Key="SexStatusToBackgroundColorConverter" />
-
     </Window.Resources>
 
     <Border>
         <Grid RowDefinitions="*,Auto">
-
             <DataGrid Grid.Row="0"
                       ItemsSource="{Binding People}"
                       AutoGenerateColumns="False">
+                <DataGrid.Styles>
+                    <Style Selector="DataGridColumnHeader">
+                        <Setter Property="Padding" Value="12 0 0 0"/>
+                    </Style>
+                    <Style Selector="CheckBox.AlignHeader">
+                        <Setter Property="Margin" Value="12 0 0 0"/>
+                    </Style>
+                </DataGrid.Styles>
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Selected"
                                             Width="Auto">
                         <DataGridTemplateColumn.HeaderTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding $parent[Window].DataContext.IsAllSelected, Mode=TwoWay}" 
+                                <CheckBox IsChecked="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).IsAllSelected, Mode=TwoWay}" 
                                           Content="Select All" />
                             </DataTemplate>
                         </DataGridTemplateColumn.HeaderTemplate>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsSelected}" />
+                                <CheckBox Classes="AlignHeader" IsChecked="{Binding IsSelected}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
