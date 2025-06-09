@@ -16,7 +16,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty] private SexTypes _selectedSexType = SexTypes.Unknown;
 
-
     [ObservableProperty] private string _newPersonAge = "0";
 
     public MainWindowViewModel()
